@@ -1,0 +1,141 @@
+
+  Section A. Vue, Vue CLI
+
+  Step 1.
+
+  Create a new project
+  Open VS Code
+  In terminal window
+    Change directory to top level development folder <dev>
+      $ cd dev
+    Create a new project with VUE CLI ...
+
+      $ vue create <project>
+      
+      Vue CLI v3.8.2
+      ? Please pick a preset: Manually select features
+      ? Check the features needed for your project: Babel, Router, Vuex, Linter
+      ? Use history mode for router? (Requires proper server setup for index fallback in production) Yes
+      ? Pick a linter / formatter config: Prettier
+      ? Pick additional lint features: (Press <space> to select, <a> to toggle all, <i> to invert selection)Lint on save
+      ? Where do you prefer placing config for Babel, PostCSS, ESLint, etc.? In dedicated config files
+      ? Save this as a preset for future projects? (y/N)
+
+      Vue CLI v3.8.2
+      ✨  Creating project in /mnt/c/Users/Dominic/dev/<project>.
+      🗃  Initializing git repository...
+      ⚙  Installing CLI plugins. This might take a while...
+  
+
+Section B. Github setup
+
+Step 1.
+  Create a new repo on Github.
+  Do not initialize the new repository with README, license, or gitignore files.
+  At the top of GitHub repository's Quick Setup page, copy the remote repository URL.
+
+Step 2.
+  Open VS Code
+    In VS Code select File> Add Folder to Workspace> <select newly created folder>
+ 
+  Select Terminal> New Terminal
+
+  In terminal window...
+  Change directory to project folder <project>
+    $ cd <project>
+    
+    If not already configured...
+      $ git config --global user.name "Dominic Moran"
+      $ git config --global user.email dominic.moran@gmail.com
+      $ git config --global core.autocrlf true
+      $ git config --global push.default simple
+      $ git config -- list
+        user.email=dominic.moran@gmail.com
+        user.name=Dominic Moran
+        core.autocrlf=input
+        push.default=simple
+
+Step 3.  
+  Add the URL for the remote repository where local repository will be pushed
+    Set the new remote...
+      $ git remote add origin <remote repository URL>
+    Verify the new remote URL
+      $ git remote -v
+    Push the changes in your local repository to GitHub.
+      $ git push origin master
+      
+Section C. Firebase
+
+Step 1.
+Create a Firebase project.
+
+Log in to Firebase console
+Select New project
+Enter project name (at least 4 characters)
+Select Create project
+Select continue when ready
+
+Step 2.
+Register app.
+
+Select Add firebase to your web app ( </>)
+Enter a nickname for app
+Copy the scripts (firebase config)
+continue to console
+
+Step 3.
+Authentication.
+Choose a product to add to your app
+Select Auth
+Select Set up sign-in method
+Select and enable Email/Password and Save
+
+Step 4.
+Database.
+Select Database
+Select Ceate database (Cloud Firestore)
+Select Start in test mode, then Enable
+
+Step 5.
+Add Firebase SDKs and initialize Firebase
+Select Using module bundlers
+
+Install the Firebase JavaScript SDK:
+
+If you don't already have a package.json file, 
+create one by running the following command from 
+the root of your JavaScript project:
+
+$ npm init
+
+Install the firebase npm package and save 
+it to your package.json file by running:
+
+$ npm install --save firebase
+
+Step 6.
+Create file in src root firebaseConfig.json
+Copy API key etc. from copied scripts (above)
+
+Section D. Tailwind (CSS)
+
+Step 1.
+ $ npm install tailwindcss --save-dev
+
+Step 2.
+Create main.css in src/assets/css
+  contains
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+Import in App.vue 
+  <style>@import "./assets/css/main.css";</style>
+
+Step 3.
+Update postcss.config.js in project root to
+  module.exports = {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  };
