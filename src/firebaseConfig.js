@@ -13,8 +13,8 @@ const config = {
 firebase.initializeApp(config);
 
 // firebase utils
-const auth = firebase.auth();
-const db = firebase.firestore();
+const fa = firebase.auth();
+const fs = firebase.firestore();
 const ff = firebase.functions();
 
-export { auth, db, ff };
+export { fa, fs, ff };

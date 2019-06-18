@@ -1,35 +1,34 @@
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto flex flex-col max-w-xs">
     <span v-if="loading" class="spinner"></span>
-    <h1 class="text-center">Home</h1>
-    <p class="text-center text-gray-500 text-xs">
-      ©2019 Fox Hunts. All rights reserved..
-    </p>
+    <h1 class="text-center">Hunts</h1>
+    <get-hunts></get-hunts>
   </div>
 </template>
 
 <script>
-// import GetHunts from "@/components/GetHunts.vue";
+import GetHunts from "../components/GetHunts.vue";
 export default {
   computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
-    isMaster() {
-      return this.$store.getters.isMaster;
-    },
-    isPlayer() {
-      return this.$store.getters.isPlayer;
-    },
+    //
+    // isAuthenticated() {
+    //   return this.$store.getters.isAuthenticated;
+    // },
+    // isMaster() {
+    //   return this.$store.getters.isMaster;
+    // },
+    // isPlayer() {
+    //   return this.$store.getters.isPlayer;
+    // },
     loading() {
+      console.log("Computing in ShowHunts.vue");
       return this.$store.getters.loading;
     }
   },
   methods: {},
-  name: "Home",
+  name: "ShowHunts",
   components: {
-    // HelloWorld
-    // GetHunts
+    GetHunts
   }
 };
 </script>
@@ -56,3 +55,4 @@ export default {
   animation: spinner 0.6s linear infinite;
 }
 </style>
+
