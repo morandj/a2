@@ -1,4 +1,3 @@
-// import router from "../router";
 import { fa } from "../firebaseConfig";
 export default {
   namespaced: true,
@@ -11,44 +10,32 @@ export default {
   mutations: {
     setCurrentPlayer(state, payload) {
       state.currentPlayer = payload;
-      // eslint-disable-next-line
-      // console.log("auth/setCurrentPlayer:", state.currentPlayer);
     },
     setIsAuthenticated(state, payload) {
       state.isAuthenticated = payload;
     }
   },
   actions: {
+    setIsAuthenticated({ commit }, payload) {
+      commit("setIsAuthenticated", payload);
+    },
     // Signup Players (including Master)
     async playerSignUp({ commit }, { email, password }) {
-      // eslint-disable-next-line
-      console.log("actions:auth/playerSignUp...");
       commit("setCurrentPlayer", {});
       commit("setIsAuthenticated", false);
-      // eslint-disable-next-line
-      console.log("Sign Up... 1.");
       try {
         const cred = await fa.createUserWithEmailAndPassword(email, password);
-        // eslint-disable-next-line
-        console.log("Sign Up... 2.");
         commit("setCurrentPlayer", cred.user); //uid
         commit("setIsAuthenticated", true);
-        // return cred.user.uid;
       } catch (error) {
-        // eslint-disable-next-line
-        console.log("Sign Up...2a. error:", error.message);
         commit("setNotify", true, { root: true });
         commit("setNotifyMessage", error.message, { root: true });
       }
     },
-    // Signin Master & Players
+    // Signin Players (including Master)
     async playerSignIn({ commit }, { email, password }) {
-      // eslint-disable-next-line
-      console.log("actions:auth/playerSignIn...0-start");
       try {
         const cred = await fa.signInWithEmailAndPassword(email, password);
-        // eslint-disable-next-line
-        console.log("actions:auth/playerSignIn...1-finish", cred);
         commit("setCurrentPlayer", cred.user); //uid
         commit("setIsAuthenticated", true);
 
@@ -84,10 +71,20 @@ export default {
         //   console.log("Signed in:...7", state.currentPlayer);
         // })
       } catch (error) {
-        // eslint-disable-next-line
-        console.log("Sign In error", error);
+        commit("setIsAuthenticated", false);
         commit("setNotify", true, { root: true });
         commit("setNotifyMessage", error.message, { root: true });
+      }
+    },
+    // Signout Master & Player
+    async userSignOut({ commit }) {
+      try {
+        fa.signOut();
+        commit("setCurrentPlayer", null);
+        commit("setIsAuthenticated", false);
+      } catch (error) {
+        commit("setCurrentPlayer", null);
+        commit("setIsAuthenticated", false);
       }
     }
   },

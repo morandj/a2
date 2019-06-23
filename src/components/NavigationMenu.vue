@@ -90,7 +90,8 @@ export default {
       this.isM ? (this.isM = false) : (this.isM = true);
     },
     signOut() {
-      this.$store.dispatch("userSignOut");
+      this.$store.dispatch("auth/userSignOut");
+      this.$router.push("/");
     },
     logState() {
       // dev only

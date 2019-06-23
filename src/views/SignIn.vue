@@ -64,7 +64,6 @@
 </template>
 
 <script>
-// const fb = require("../firebaseConfig.js");
 export default {
   data() {
     return {
@@ -77,43 +76,36 @@ export default {
   computed: {
     currentPlayer() {
       return this.$store.getters["auth/currentPlayer"];
+    },
+    isAuthenticated() {
+      return this.$store.getters["auth/isAuthenticated"];
     }
   },
   methods: {
     async signIn() {
-      // eslint-disable-next-line
-      console.log(
-        "signIn...0",
-        this.signInForm.email,
-        this.signInForm.password
-      );
-      this.$store.dispatch("setLoading", true, { root: true });
-      await this.$store.dispatch("auth/playerSignIn", {
-        email: this.signInForm.email,
-        password: this.signInForm.password
-      });
-      // eslint-disable-next-line
-      console.log("signIn...1-signed in");
-      if (this.currentPlayer.uid) {
-        await this.$store.dispatch("user/getUserProfile", {
-          userId: this.currentPlayer.uid
+      try {
+        this.$store.dispatch("setLoading", true, { root: true });
+
+        await this.$store.dispatch("auth/playerSignIn", {
+          email: this.signInForm.email,
+          password: this.signInForm.password
         });
-        // eslint-disable-next-line
-        console.log("signIn...2-profile got");
-        await this.$store.dispatch("hunt/getHunts", {});
-        // eslint-disable-next-line
-        console.log("signIn...3-hunts got");
+        if (this.isAuthenticated) {
+          await this.$store.dispatch("user/getUserProfile", {
+            userId: this.currentPlayer.uid
+          });
+          await this.$store.dispatch("hunt/getHunts", {});
+          this.$store.dispatch("setLoading", false, { root: true });
+          this.$router.push("/");
+        } else {
+          this.$store.dispatch("setLoading", false, { root: true });
+        }
+      } catch (error) {
         this.$store.dispatch("setLoading", false, { root: true });
-      } else {
-        // eslint-disable-next-line
-        console.log(
-          "error in signIn:",
-          this.signInForm.email,
-          this.signInForm.password
-        );
-        this.$store.dispatch("setLoading", false, { root: true });
+        this.$store.dispatch("auth/setIsAuthenticated", false);
       }
     },
+
     cancel() {
       this.$router.push("/");
     }

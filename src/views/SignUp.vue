@@ -84,28 +84,27 @@ export default {
   computed: {
     currentPlayer() {
       return this.$store.getters["auth/currentPlayer"];
+    },
+    isAuthenticated() {
+      return this.$store.getters["auth/isAuthenticated"];
     }
   },
   methods: {
     async signUp() {
-      // eslint-disable-next-line
-      console.log(
-        "signUp:",
-        this.signUpForm.name,
-        this.signUpForm.email,
-        this.signUpForm.password
-      );
-      await this.$store.dispatch("auth/playerSignUp", {
-        // name: this.signUpForm.name,
-        email: this.signUpForm.email,
-        password: this.signUpForm.password
-      });
-
-      if (this.currentPlayer.uid) {
-        await this.$store.dispatch("user/setUserProfile", {
-          userId: this.currentPlayer.uid,
-          userName: this.signUpForm.name
+      try {
+        await this.$store.dispatch("auth/playerSignUp", {
+          email: this.signUpForm.email,
+          password: this.signUpForm.password
         });
+        if (this.isAuthenticated) {
+          await this.$store.dispatch("user/setUserProfile", {
+            userId: this.currentPlayer.uid,
+            userName: this.signUpForm.name
+          });
+        }
+      } catch (error) {
+        this.$store.dispatch("setLoading", false, { root: true });
+        this.$store.dispatch("auth/setIsAuthenticated", false);
       }
     },
     cancel() {

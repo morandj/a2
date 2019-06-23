@@ -54,35 +54,24 @@ export default {
     }
   },
   methods: {
-    editHunt(index) {
-      // eslint-disable-next-line
-      console.log("(1)...editHunt: ", index);
-      this.$store
-        .dispatch("editCurrentHunt", { index: index, mode: "edit" })
+    async editHunt(index) {
+      await this.$store
+        .dispatch("hunt/editCurrentHunt", { index: index, mode: "edit" })
         .then(() => {
-          console.log("(6)...Current hunt got:", this.$store.state.currentHunt);
           this.$router.push({ name: "edithunt", params: { index } });
         });
     },
 
-    playHunt(index) {
-      // eslint-disable-next-line
-      console.log("(1)...playHunt: ", this.hunts[index]);
-      this.$store
-        .dispatch("playCurrentHunt", { index: index, mode: "play" })
+    async playHunt(index) {
+      await this.$store
+        .dispatch("hunt/playCurrentHunt", { index: index, mode: "play" })
         .then(() => {
-          console.log(
-            "(6)...Current hunt got in home/playhunt:",
-            this.$store.state.currentHunt
-          );
           this.$router.push({ name: "playhunt", params: { index } });
         });
     }
   },
   name: "GetHunts",
-  components: {
-    // HelloWorld
-  }
+  components: {}
 };
 </script>
 <style scoped>
@@ -108,4 +97,3 @@ export default {
   animation: spinner 0.6s linear infinite;
 }
 </style>
-

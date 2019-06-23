@@ -3,19 +3,28 @@
     <!-- <p>{{ $route.params.id }}</p> -->
     <div class="w-full max-w-sm">
       <h1 class>Edit Hunt</h1>
-      <form @submit.prevent class="bg-white shadow-md rounded px-6 pt-4 pb-6 mb-4">
+      <form
+        @submit.prevent
+        class="bg-white shadow-md rounded px-6 pt-4 pb-6 mb-4"
+      >
         <div class="mb-4">
-          <label class="block text-gray-800 text-sm font-bold mb-2" for="title">Title</label>
+          <label class="block text-gray-800 text-sm font-bold mb-2" for="title"
+            >Title</label
+          >
           <input
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline"
             id="title"
             type="text"
             placeholder="Title"
             v-model.trim="hunt.huntData.title"
-          >
+          />
         </div>
         <div class="mb-4">
-          <label class="block text-gray-800 text-sm font-bold mb-2" for="description">Description</label>
+          <label
+            class="block text-gray-800 text-sm font-bold mb-2"
+            for="description"
+            >Description</label
+          >
           <textarea
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline"
             id="description"
@@ -30,7 +39,9 @@
             @click="showClues = !showClues"
             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
-          >{{ showClues ? 'Hide' : 'Show' }} Clues</button>
+          >
+            {{ showClues ? "Hide" : "Show" }} Clues
+          </button>
           <edit-clues v-if="showClues"></edit-clues>
         </div>
 
@@ -39,7 +50,9 @@
             @click="showScavs = !showScavs"
             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
-          >{{ showScavs ? 'Hide' : 'Show' }} Scavs</button>
+          >
+            {{ showScavs ? "Hide" : "Show" }} Scavs
+          </button>
           <edit-scavs v-if="showScavs"></edit-scavs>
         </div>
 
@@ -48,10 +61,14 @@
             @click="updateHunt"
             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
-          >Update Hunt</button>
+          >
+            Update Hunt
+          </button>
         </div>
       </form>
-      <p class="text-center text-gray-500 text-xs">©2019 Hunts. All rights reserved.</p>
+      <p class="text-center text-gray-500 text-xs">
+        ©2019 Hunts. All rights reserved.
+      </p>
     </div>
   </div>
 </template>
@@ -68,7 +85,7 @@ export default {
     hunt() {
       // eslint-disable-next-line
       console.log("computed:", this.$route.params.index);
-      return this.$store.getters.currentHunt;
+      return this.$store.getters["hunt/currentHunt"];
     }
   },
   data() {
@@ -86,7 +103,7 @@ export default {
         this.hunt.huntData.title,
         this.hunt.huntData.description
       );
-      this.$store.dispatch("updateHunt", this.hunt);
+      this.$store.dispatch("hunt/updateHunt", this.hunt);
     }
   },
   components: {
