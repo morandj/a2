@@ -1,4 +1,4 @@
-import { fa } from "../firebaseConfig";
+import { fa, ff } from "../firebaseConfig";
 export default {
   namespaced: true,
   state: {
@@ -86,6 +86,55 @@ export default {
         commit("setCurrentPlayer", null);
         commit("setIsAuthenticated", false);
       }
+    },
+
+    // cloud function
+
+    setUserClaims({ state }) {
+      return new Promise((resolve, reject) => {
+        // eslint-disable-next-line
+        console.log("auth/setUserClaims:", state);
+        let userId = state.currentPlayer.uid;
+        let userName = state.currentPlayer.profile.name;
+        let userClaims = { master: true };
+        const setUserClaims = ff.httpsCallable("setCustomClaims");
+        setUserClaims({ uid: userId, name: userName, claims: userClaims })
+          .then(result => {
+            // eslint-disable-next-line
+            console.log("auth/setUserClaims:", result);
+            resolve();
+          })
+          .catch(error => {
+            // eslint-disable-next-line
+            console.log(error);
+            reject();
+          });
+      });
+    },
+
+    getUserClaims({ commit, state }) {
+      // eslint-disable-next-line
+      console.log("actions:auth/getUserClaims...");
+      return new Promise((resolve, reject) => {
+        fa.currentUser
+          .getIdTokenResult()
+          .then(idTokenResult => {
+            // eslint-disable-next-line
+            console.log(
+              "Token: ",
+              idTokenResult,
+              "currentUser: ",
+              state.currentUser
+            );
+            commit("setCurrentPlayerClaims", idTokenResult.claims);
+            resolve();
+          })
+          .catch(error => {
+            // eslint-disable-next-line
+            console.log(error);
+            reject();
+          });
+      });
     }
   },
   getters: {

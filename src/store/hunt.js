@@ -14,10 +14,6 @@ export default {
       clueAnswers: [],
       scavAnswers: []
     },
-    playerResponse: {
-      clueResponses: [],
-      scavResponses: []
-    },
     currentClueAnswers: {},
     curentScavAnswers: {},
     currentScavs: {},
@@ -53,18 +49,6 @@ export default {
         state,
         value
       );
-    },
-    setPlayerResponse(state, value) {
-      if ("clueResponses" in value === true) {
-        state.playerResponse.clueResponses = value.clueResponses;
-      } else {
-        state.playerResponse.clueResponses = [];
-      }
-      if ("scavResponses" in value === true) {
-        state.playerResponse.scavResponses = value.scavResponses;
-      } else {
-        state.playerResponse.scavResponses = [];
-      }
     }
   },
   actions: {
@@ -235,88 +219,6 @@ export default {
         // commit("setLoading", false);
         return [];
       }
-    },
-    // Get the selected hunt and then get the PLAYER response for that hunt.
-    async playCurrentHunt({ commit, dispatch }, obj) {
-      commit("setCurrentHunt", obj.index);
-      //dispatch("checkUserProfile");
-      try {
-        const response = await dispatch("getPlayerResponse", obj.index);
-        // commit("setLoading", false);
-        commit("setPlayerResponse", response);
-        // router.push({ name: "edithunt", params: { index } });
-      } catch (error) {
-        // eslint-disable-next-line
-        console.log("Error in action:hunt/playCurrentHunt", error);
-      }
-    },
-    async getPlayerResponse({ state, rootState }) {
-      // commit("setLoading", true);
-
-      let userId = rootState.auth.currentPlayer.uid;
-      let huntId = state.currentHunt.huntId;
-      // let answers; //answers
-      let docRef = fs
-        .collection("hunts")
-        .doc(huntId)
-        .collection("players")
-        .doc(userId);
-
-      try {
-        const doc = await docRef.get();
-        if (doc.exists) {
-          let docData = doc.data();
-          return docData.playerResponse;
-        } else {
-          let len;
-
-          len = state.currentHunt.huntData.clues.length;
-          let resClues = [];
-          for (let i = 0; i < len; i++) {
-            let num = i + 1;
-            let obj = { number: num, response: "" };
-            resClues.push(obj);
-          }
-
-          len = state.currentHunt.huntData.scavs.length;
-          let resScavs = [];
-          for (let i = 0; i < len; i++) {
-            let num = i + 1;
-            let obj = { number: num, response: "" };
-            resScavs.push(obj);
-          }
-          return { clueResponses: resClues, scavResponses: resScavs };
-        }
-      } catch (error) {
-        // commit("setLoading", false);
-        // router.push("/");
-        // eslint-disable-next-line
-        console.log("Error getting player response", error);
-      }
-    },
-    updatePlayerResponse({ commit, state, rootState }) {
-      let playerResponse = state.playerResponse;
-
-      let huntId = state.currentHunt.huntId;
-      let userId = rootState.auth.currentPlayer.uid;
-
-      if (playerResponse) {
-        commit("setLoading", true);
-        return fs
-          .collection("hunts")
-          .doc(huntId)
-          .collection("players")
-          .doc(userId)
-          .set({ playerResponse }, { merge: true })
-          .then(() => {
-            commit("setLoading", false);
-          });
-      } else {
-        // eslint-disable-next-line
-        console.log("no response yet...", playerResponse);
-        commit("setLoading", false);
-        return [];
-      }
     }
   },
   getters: {
@@ -346,9 +248,6 @@ export default {
     },
     huntClueAnswers(state) {
       return state.huntSolution.clueAnswers;
-    },
-    playerResponse(state) {
-      return state.playerResponse;
     }
   }
 };

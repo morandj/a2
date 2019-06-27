@@ -64,7 +64,10 @@ export default {
 
     async playHunt(index) {
       await this.$store
-        .dispatch("hunt/playCurrentHunt", { index: index, mode: "play" })
+        .dispatch("huntPlay/playCurrentHunt", {
+          index: index,
+          mode: "play"
+        })
         .then(() => {
           this.$router.push({ name: "playhunt", params: { index } });
         });

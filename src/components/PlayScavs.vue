@@ -108,9 +108,9 @@ export default {
       // eslint-disable-next-line
       console.log(
         "playerResponse:",
-        this.$store.getters["hunt/playerResponse"]
+        this.$store.getters["huntPlay/playerResponse"]
       );
-      return this.$store.getters["hunt/playerResponse"];
+      return this.$store.getters["huntPlay/playerResponse"];
     }
   },
   methods: {
@@ -136,7 +136,7 @@ export default {
       // eslint-disable-next-line
       console.log("saveAnswer:", index, status);
       this.playerResponse.scavResponses[index].response = status;
-      this.$store.dispatch("hunt/updatePlayerResponse");
+      this.$store.dispatch("huntPlay/updatePlayerResponse");
       this.modal = !this.modal;
     }
   },

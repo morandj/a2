@@ -4,11 +4,12 @@ import Vuex from "vuex";
 import auth from "./auth";
 import user from "./user";
 import hunt from "./hunt";
+import huntPlay from "./huntPlay";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  modules: { auth, user, hunt },
+  modules: { auth, user, hunt, huntPlay },
   state: {
     loading: false,
     notify: false,

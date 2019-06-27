@@ -99,7 +99,7 @@ export default {
         this.hunt.huntData.title,
         this.hunt.huntData.description
       );
-      this.$store.dispatch("hunt/updatePlayerResponse");
+      this.$store.dispatch("huntPlay/updatePlayerResponse");
     }
   },
   components: {
