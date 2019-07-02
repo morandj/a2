@@ -2,46 +2,76 @@ import { fa, ff } from "../firebaseConfig";
 export default {
   namespaced: true,
   state: {
-    currentPlayer: {},
+    users: [],
+    currentUser: {},
     isAuthenticated: false,
+    customClaims: {
+      master: false,
+      player: false
+    },
     isMaster: true,
     isPlayer: true
   },
   mutations: {
-    setCurrentPlayer(state, payload) {
-      state.currentPlayer = payload;
+    setUsers(state, value) {
+      // eslint-disable-next-line
+      console.log("auth/setUsers: ", value);
+      state.users = value;
+    },
+    setCurrentUser(state, payload) {
+      state.currentUser = payload;
     },
     setIsAuthenticated(state, payload) {
       state.isAuthenticated = payload;
+    },
+    setCurrentUserClaims(state, value) {
+      state.currentUser.claims = value;
+      state.isMaster = value.master;
+      state.isPlayer = value.player;
+      // eslint-disable-next-line
+      console.log(
+        "value:",
+        value,
+        "setCurrentUserClaims:",
+        state.currentUser,
+        "isMaster",
+        state.isMaster
+      );
+    },
+    setCustomClaims(state, value) {
+      state.customClaims = value;
+    },
+    updateIsMaster(state, value) {
+      state.isMaster = value;
     }
   },
   actions: {
     setIsAuthenticated({ commit }, payload) {
       commit("setIsAuthenticated", payload);
     },
-    // Signup Players (including Master)
-    async playerSignUp({ commit }, { email, password }) {
-      commit("setCurrentPlayer", {});
+    // Signup Users (including Master)
+    async userSignUp({ commit }, { email, password }) {
+      commit("setCurrentUser", {});
       commit("setIsAuthenticated", false);
       try {
         const cred = await fa.createUserWithEmailAndPassword(email, password);
-        commit("setCurrentPlayer", cred.user); //uid
+        commit("setCurrentUser", cred.user); //uid
         commit("setIsAuthenticated", true);
       } catch (error) {
         commit("setNotify", true, { root: true });
         commit("setNotifyMessage", error.message, { root: true });
       }
     },
-    // Signin Players (including Master)
-    async playerSignIn({ commit }, { email, password }) {
+    // SignIn Users
+    async userSignIn({ commit }, { email, password }) {
       try {
         const cred = await fa.signInWithEmailAndPassword(email, password);
-        commit("setCurrentPlayer", cred.user); //uid
+        commit("setCurrentUser", cred.user); //uid
         commit("setIsAuthenticated", true);
 
         // eslint-disable-next-line
-        // console.log("actions:auth/playerSignIn...2, getting player profile");
-        // return dispatch("getPlayerProfile");
+        // console.log("actions:auth/userSignIn...2, getting user profile");
+        // return dispatch("getUserProfile");
         // })
         // .then(() => {
         //   // eslint-disable-next-line
@@ -57,9 +87,9 @@ export default {
         //   // eslint-disable-next-line
         //   console.log(
         //     "actions:userSignIn...5, getting users",
-        //     state.currentPlayer.claims
+        //     state.currentUser.claims
         //   );
-        //   if (state.currentPlayer.claims.master) {
+        //   if (state.currentUser.claims.master) {
         //     return dispatch("getUsers");
         //   }
         // })
@@ -68,7 +98,7 @@ export default {
         //   console.log("actions:userSignIn...6, push to showhunts");
         //   router.push("/showhunts");
         //   // eslint-disable-next-line
-        //   console.log("Signed in:...7", state.currentPlayer);
+        //   console.log("Signed in:...7", state.currentUser);
         // })
       } catch (error) {
         commit("setIsAuthenticated", false);
@@ -76,29 +106,51 @@ export default {
         commit("setNotifyMessage", error.message, { root: true });
       }
     },
-    // Signout Master & Player
+    // Signout User
     async userSignOut({ commit }) {
       try {
         fa.signOut();
-        commit("setCurrentPlayer", null);
+        commit("setCurrentUser", null);
         commit("setIsAuthenticated", false);
       } catch (error) {
-        commit("setCurrentPlayer", null);
+        commit("setCurrentUser", null);
         commit("setIsAuthenticated", false);
       }
     },
 
     // cloud function
-
-    setUserClaims({ state }) {
+    getCustomClaims({ commit, state }, payload) {
       return new Promise((resolve, reject) => {
         // eslint-disable-next-line
-        console.log("auth/setUserClaims:", state);
-        let userId = state.currentPlayer.uid;
-        let userName = state.currentPlayer.profile.name;
-        let userClaims = { master: true };
-        const setUserClaims = ff.httpsCallable("setCustomClaims");
-        setUserClaims({ uid: userId, name: userName, claims: userClaims })
+        console.log("auth/getCustomClaims:", state, payload);
+        let userId = payload.playerId;
+        // let userName = payload.player.playerData.name;
+        // let userClaims = payload.claims;
+        const getClaims = ff.httpsCallable("getCustomClaims");
+        getClaims({ uid: userId })
+          .then(result => {
+            // eslint-disable-next-line
+            console.log("auth/getCustomClaims:", result, payload);
+            commit("setCustomClaims", result.data);
+            resolve();
+          })
+          .catch(error => {
+            // eslint-disable-next-line
+            console.log(error);
+            reject();
+          });
+      });
+    },
+
+    setUserClaims({ state }, payload) {
+      return new Promise((resolve, reject) => {
+        // eslint-disable-next-line
+        console.log("auth/setUserClaims:", state, payload);
+        let userId = payload.player.playerId;
+        let userName = payload.player.playerData.name;
+        let userClaims = payload.claims;
+        const updateClaims = ff.httpsCallable("setCustomClaims");
+        updateClaims({ uid: userId, name: userName, claims: userClaims })
           .then(result => {
             // eslint-disable-next-line
             console.log("auth/setUserClaims:", result);
@@ -126,7 +178,7 @@ export default {
               "currentUser: ",
               state.currentUser
             );
-            commit("setCurrentPlayerClaims", idTokenResult.claims);
+            commit("setCurrentUserClaims", idTokenResult.claims);
             resolve();
           })
           .catch(error => {
@@ -141,14 +193,17 @@ export default {
     isAuthenticated(state) {
       return state.isAuthenticated;
     },
+    customClaims(state) {
+      return state.customClaims;
+    },
     isMaster(state) {
       return state.isMaster;
     },
     isPlayer(state) {
       return state.isPlayer;
     },
-    currentPlayer(state) {
-      return state.currentPlayer;
+    currentUser(state) {
+      return state.currentUser;
     }
   }
 };

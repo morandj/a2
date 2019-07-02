@@ -40,7 +40,7 @@ export default {
     async getPlayerResponse({ rootState }) {
       // commit("setLoading", true);
 
-      let userId = rootState.auth.currentPlayer.uid;
+      let userId = rootState.auth.currentUser.uid;
       let huntId = rootState.hunt.currentHunt.huntId;
       // let answers; //answers
       let docRef = fs
@@ -84,8 +84,8 @@ export default {
     updatePlayerResponse({ commit, state, rootState }) {
       let playerResponse = state.playerResponse;
 
+      let userId = rootState.auth.currentUser.uid;
       let huntId = rootState.hunt.currentHunt.huntId;
-      let userId = rootState.auth.currentPlayer.uid;
 
       if (playerResponse) {
         commit("setLoading", true);

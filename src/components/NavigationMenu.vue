@@ -22,9 +22,9 @@
       </button>
       <button v-if="isAuthenticated && isMaster">
         <router-link
-          to="/showusers"
+          to="/showplayers"
           class="mr-3 inline-block border border-blue-500 rounded py-1 px-3 bg-blue-500 text-white"
-          >Users</router-link
+          >Players</router-link
         >
       </button>
       <button
@@ -60,7 +60,7 @@ export default {
       items: [
         { title: "Home", to: "/", authReq: true },
         { title: "Hunts", to: "/showhunts", authReq: true },
-        // { title: "Users", to: "/showusers", authReq: true },
+        // { title: "Players", to: "/showplayers", authReq: true },
         { title: "Sign In", to: "/signin", authReq: false },
         { title: "Sign Up", to: "/signup", authReq: false }
         // { title: "New", to: "/newhunt", authReq: true }

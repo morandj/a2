@@ -82,8 +82,8 @@ export default {
     };
   },
   computed: {
-    currentPlayer() {
-      return this.$store.getters["auth/currentPlayer"];
+    currentUser() {
+      return this.$store.getters["auth/currentUser"];
     },
     isAuthenticated() {
       return this.$store.getters["auth/isAuthenticated"];
@@ -92,16 +92,18 @@ export default {
   methods: {
     async signUp() {
       try {
-        await this.$store.dispatch("auth/playerSignUp", {
+        await this.$store.dispatch("auth/userSignUp", {
           email: this.signUpForm.email,
           password: this.signUpForm.password
         });
         if (this.isAuthenticated) {
-          await this.$store.dispatch("user/setUserProfile", {
-            userId: this.currentPlayer.uid,
-            userName: this.signUpForm.name
+          console.log("SignUp:", this.currentUser.uid, this.signUpForm.name);
+          await this.$store.dispatch("player/setPlayerProfile", {
+            playerId: this.currentUser.uid,
+            playerName: this.signUpForm.name
           });
         }
+        this.$router.push("/");
       } catch (error) {
         this.$store.dispatch("setLoading", false, { root: true });
         this.$store.dispatch("auth/setIsAuthenticated", false);

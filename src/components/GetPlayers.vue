@@ -1,27 +1,25 @@
 <template>
-  <div class="container mx-auto flex flex-col items-center">
+  <div class="container mx-auto flex flex-col">
     <span v-if="loading" class="spinner"></span>
     <ul>
       <li
-        v-for="(hunt, index) in hunts"
+        v-for="(player, index) in players"
         :key="index"
         class="m-3 px-6 py-4 rounded shadow"
       >
-        <div class="flex flex-col">
-          <div class="font-bold mb-1">{{ hunt.huntData.title }}</div>
-          <div class="mb-2">{{ hunt.huntData.description }}</div>
+        <div class="flex flex-row content-between">
+          <div class="font-bold mb-1">{{ player.playerData.name }}</div>
+          <div class="mb-2">{{ player.playerData.team }}</div>
 
-          <button
+          <!-- <button
             v-if="isAuthenticated && isPlayer"
-            @click="playHunt(index)"
+            @click="playPlayer(index)"
             class="btn btn-blue"
-          >
-            Play
-          </button>
+          >Play</button>-->
           <button
             v-if="isAuthenticated && isMaster"
-            @click="editHunt(index)"
-            class="btn btn-green"
+            @click="editPlayer(index)"
+            class="btn btn-green ml-auto"
           >
             Edit
           </button>
@@ -49,32 +47,29 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
-    hunts() {
-      return this.$store.getters["hunt/hunts"];
+    players() {
+      return this.$store.getters["player/players"];
     }
   },
   methods: {
-    async editHunt(index) {
-      await this.$store
-        .dispatch("huntEdit/editCurrentHunt", { index: index, mode: "edit" })
+    editPlayer(index) {
+      // eslint-disable-next-line
+      console.log("(1)...editPlayer: ", index);
+      this.$store
+        .dispatch("player/editCurrentPlayer", { index: index, mode: "edit" })
         .then(() => {
-          this.$router.push({ name: "edithunt", params: { index } });
-        });
-    },
-
-    async playHunt(index) {
-      await this.$store
-        .dispatch("huntPlay/playCurrentHunt", {
-          index: index,
-          mode: "play"
-        })
-        .then(() => {
-          this.$router.push({ name: "playhunt", params: { index } });
+          console.log(
+            "(6)...Current player got:",
+            this.$store.state.player.currentPlayer
+          );
+          this.$router.push({ name: "editplayer", params: { index } });
         });
     }
   },
-  name: "GetHunts",
-  components: {}
+  name: "GetPlayers",
+  components: {
+    // HelloWorld
+  }
 };
 </script>
 <style scoped>
@@ -100,3 +95,4 @@ export default {
   animation: spinner 0.6s linear infinite;
 }
 </style>
+

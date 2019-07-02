@@ -70,7 +70,7 @@ export default {
       return this.$store.getters["hunt/scavs"];
     },
     huntSolution() {
-      return this.$store.getters["hunt/huntSolution"];
+      return this.$store.getters["huntEdit/huntSolution"];
     }
   },
   methods: {

@@ -8,6 +8,8 @@ import ShowHunts from "./views/ShowHunts.vue";
 import NewHunt from "./views/NewHunt.vue";
 import EditHunt from "./views/EditHunt.vue";
 import PlayHunt from "./views/PlayHunt.vue";
+import ShowPlayers from "@/views/ShowPlayers.vue";
+import EditPlayer from "@/views/EditPlayer.vue";
 
 Vue.use(Router);
 
@@ -69,6 +71,22 @@ export default new Router({
       path: "/playhunt/:index",
       name: "playhunt",
       component: PlayHunt,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/showplayers",
+      name: "showplayers",
+      component: ShowPlayers,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/editplayer/:index",
+      name: "editplayer",
+      component: EditPlayer,
       meta: {
         requiresAuth: true
       }

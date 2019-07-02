@@ -103,7 +103,7 @@ export default {
         this.hunt.huntData.title,
         this.hunt.huntData.description
       );
-      this.$store.dispatch("hunt/updateHunt", this.hunt);
+      this.$store.dispatch("huntEdit/updateHunt", this.hunt);
     }
   },
   components: {

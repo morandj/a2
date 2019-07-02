@@ -74,8 +74,8 @@ export default {
     };
   },
   computed: {
-    currentPlayer() {
-      return this.$store.getters["auth/currentPlayer"];
+    currentUser() {
+      return this.$store.getters["auth/currentUser"];
     },
     isAuthenticated() {
       return this.$store.getters["auth/isAuthenticated"];
@@ -86,17 +86,19 @@ export default {
       try {
         this.$store.dispatch("setLoading", true, { root: true });
 
-        await this.$store.dispatch("auth/playerSignIn", {
+        await this.$store.dispatch("auth/userSignIn", {
           email: this.signInForm.email,
           password: this.signInForm.password
         });
         if (this.isAuthenticated) {
-          await this.$store.dispatch("user/getUserProfile", {
-            userId: this.currentPlayer.uid
+          await this.$store.dispatch("auth/getUserClaims");
+          await this.$store.dispatch("player/getPlayerProfile", {
+            playerId: this.currentUser.uid
           });
           await this.$store.dispatch("hunt/getHunts", {});
+          await this.$store.dispatch("player/getPlayers", {}); //if master!!
           this.$store.dispatch("setLoading", false, { root: true });
-          this.$router.push("/");
+          this.$router.push("/"); // change to: "/showhunts"
         } else {
           this.$store.dispatch("setLoading", false, { root: true });
         }

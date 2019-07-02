@@ -68,10 +68,10 @@ export default {
       return this.$store.getters["hunt/clues"];
     },
     huntSolution() {
-      return this.$store.getters["hunt/huntSolution"];
+      return this.$store.getters["huntEdit/huntSolution"];
     },
     huntClueAnswers() {
-      return this.$store.getters["hunt/huntClueAnswers"];
+      return this.$store.getters["huntEdit/huntClueAnswers"];
     }
   },
   methods: {
